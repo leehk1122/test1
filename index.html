@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Delay Cart</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: #f3f4f6;
+      font-family: sans-serif;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="max-w-6xl mx-auto p-6">
+
+    <!-- HOME SCREEN -->
+    <section id="homeScreen" class="screen">
+      <div class="bg-white rounded-3xl shadow-lg p-10 text-center fade-in mt-10">
+        <h1 class="text-5xl font-bold mb-6">Smart Delay Cart</h1>
+
+        <p class="text-xl text-gray-600 mb-8">
+          충동구매를 잠시 멈추고 더 가치 있는 소비를 도와주는 서비스
+        </p>
+
+        <button
+          onclick="showScreen('timeScreen')"
+          class="bg-black text-white px-8 py-4 rounded-2xl text-lg hover:scale-105 transition"
+        >
+          시작하기
+        </button>
+      </div>
+    </section>
+
+    <!-- TIME SCREEN -->
+    <section id="timeScreen" class="screen hidden">
+      <div class="bg-white rounded-3xl shadow-lg p-8 mt-10 fade-in">
+        <h2 class="text-4xl font-bold mb-6">구매 대기 시간 설정</h2>
+
+        <p class="text-gray-600 mb-8 text-lg">
+          구매 전 충분히 생각할 시간을 설정하세요.
+        </p>
+
+        <div class="grid md:grid-cols-4 gap-4 mb-8">
+          <button onclick="setTime(30)" class="bg-gray-100 rounded-2xl p-6 hover:bg-black hover:text-white transition">
+            30분
+          </button>
+
+          <button onclick="setTime(60)" class="bg-gray-100 rounded-2xl p-6 hover:bg-black hover:text-white transition">
+            1시간
+          </button>
+
+          <button onclick="setTime(1440)" class="bg-gray-100 rounded-2xl p-6 hover:bg-black hover:text-white transition">
+            24시간
+          </button>
+
+          <button onclick="customTime()" class="bg-gray-100 rounded-2xl p-6 hover:bg-black hover:text-white transition">
+            직접 설정
+          </button>
+        </div>
+
+        <div class="bg-gray-100 rounded-2xl p-5 mb-8">
+          <p class="text-xl">
+            현재 설정 시간:
+            <span id="selectedTime" class="font-bold">30분</span>
+          </p>
+        </div>
+
+        <div class="flex gap-4">
+          <button
+            onclick="showScreen('homeScreen')"
+            class="bg-gray-200 px-6 py-3 rounded-2xl"
+          >
+            이전
+          </button>
+
+          <button
+            onclick="showScreen('shopScreen')"
+            class="bg-black text-white px-6 py-3 rounded-2xl"
+          >
+            다음
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHOP SCREEN -->
+    <section id="shopScreen" class="screen hidden">
+      <div class="bg-white rounded-3xl shadow-lg p-8 mt-10 fade-in">
+        <h2 class="text-4xl font-bold mb-6">쇼핑 화면</h2>
+
+        <div class="grid md:grid-cols-3 gap-6">
+
+          <div class="bg-gray-100 rounded-3xl p-5">
+            <img
+              src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop"
+              class="rounded-2xl mb-4 h-52 w-full object-cover"
+            />
+
+            <h3 class="text-xl font-bold mb-2">운동화</h3>
+            <p class="text-gray-600 mb-4">₩120,000</p>
+
+            <textarea
+              id="memo1"
+              placeholder="왜 사고 싶은지 기록해보세요"
+              class="w-full rounded-xl p-3 mb-4"
+            ></textarea>
+
+            <button
+              onclick="addToCart('운동화',120000,'memo1')"
+              class="w-full bg-black text-white py-3 rounded-2xl"
+            >
+              장바구니 추가
+            </button>
+          </div>
+
+          <div class="bg-gray-100 rounded-3xl p-5">
+            <img
+              src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop"
+              class="rounded-2xl mb-4 h-52 w-full object-cover"
+            />
+
+            <h3 class="text-xl font-bold mb-2">스마트폰</h3>
+            <p class="text-gray-600 mb-4">₩980,000</p>
+
+            <textarea
+              id="memo2"
+              placeholder="왜 사고 싶은지 기록해보세요"
+              class="w-full rounded-xl p-3 mb-4"
+            ></textarea>
+
+            <button
+              onclick="addToCart('스마트폰',980000,'memo2')"
+              class="w-full bg-black text-white py-3 rounded-2xl"
+            >
+              장바구니 추가
+            </button>
+          </div>
+
+          <div class="bg-gray-100 rounded-3xl p-5">
+            <img
+              src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=1200&auto=format&fit=crop"
+              class="rounded-2xl mb-4 h-52 w-full object-cover"
+            />
+
+            <h3 class="text-xl font-bold mb-2">티셔츠</h3>
+            <p class="text-gray-600 mb-4">₩39,000</p>
+
+            <textarea
+              id="memo3"
+              placeholder="왜 사고 싶은지 기록해보세요"
+              class="w-full rounded-xl p-3 mb-4"
+            ></textarea>
+
+            <button
+              onclick="addToCart('티셔츠',39000,'memo3')"
+              class="w-full bg-black text-white py-3 rounded-2xl"
+            >
+              장바구니 추가
+            </button>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mt-8">
+          <button
+            onclick="showScreen('timeScreen')"
+            class="bg-gray-200 px-6 py-3 rounded-2xl"
+          >
+            이전
+          </button>
+
+          <button
+            onclick="showScreen('cartScreen')"
+            class="bg-black text-white px-6 py-3 rounded-2xl"
+          >
+            장바구니 보기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CART SCREEN -->
+    <section id="cartScreen" class="screen hidden">
+      <div class="bg-white rounded-3xl shadow-lg p-8 mt-10 fade-in">
+        <h2 class="text-4xl font-bold mb-6">대기 중인 장바구니</h2>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-8">
+          <div class="bg-blue-100 rounded-3xl p-6">
+            <h2 class="font-bold text-xl mb-2">오늘 절약한 금액</h2>
+            <p id="savedMoney" class="text-3xl font-bold">₩0</p>
+          </div>
+
+          <div class="bg-green-100 rounded-3xl p-6">
+            <h2 class="font-bold text-xl mb-2">취소된 구매</h2>
+            <p id="cancelCount" class="text-3xl font-bold">0개</p>
+          </div>
+
+          <div class="bg-purple-100 rounded-3xl p-6">
+            <h2 class="font-bold text-xl mb-2">대기 중 상품</h2>
+            <p id="waitingCount" class="text-3xl font-bold">0개</p>
+          </div>
+        </div>
+
+        <div id="cartList" class="space-y-4 mb-8"></div>
+
+        <div class="bg-black text-white rounded-3xl p-8">
+          <h2 class="text-3xl font-bold mb-4">구매 취소 시 가능한 취미</h2>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="bg-white text-black rounded-2xl p-4">헬스장 등록</div>
+            <div class="bg-white text-black rounded-2xl p-4">독서 및 자기계발</div>
+            <div class="bg-white text-black rounded-2xl p-4">여행 적금</div>
+          </div>
+        </div>
+
+        <button
+          onclick="showScreen('shopScreen')"
+          class="mt-8 bg-gray-200 px-6 py-3 rounded-2xl"
+        >
+          이전
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let selectedMinutes = 30;
+    let cartItems = [];
+    let totalSaved = 0;
+    let cancelTotal = 0;
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.add('hidden');
+      });
+
+      document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    function setTime(minutes) {
+      selectedMinutes = minutes;
+
+      document.getElementById('selectedTime').innerText =
+        minutes >= 60
+          ? `${minutes / 60}시간`
+          : `${minutes}분`;
+    }
+
+    function customTime() {
+      const input = prompt('시간(분)을 입력하세요');
+
+      if (input && !isNaN(input)) {
+        setTime(Number(input));
+      }
+    }
+
+    function addToCart(name, price, memoId) {
+      const memo = document.getElementById(memoId).value;
+
+      const endTime = Date.now() + selectedMinutes * 60 * 1000;
+
+      cartItems.push({ name, price, memo, endTime });
+
+      renderCart();
+
+      alert('장바구니에 추가되었습니다.');
+    }
+
+    function renderCart() {
+      const cartList = document.getElementById('cartList');
+
+      cartList.innerHTML = '';
+
+      document.getElementById('waitingCount').innerText = `${cartItems.length}개`;
+
+      cartItems.forEach((item, index) => {
+        const div = document.createElement('div');
+
+        div.className = 'bg-gray-100 rounded-3xl p-5';
+
+        div.innerHTML = `
+          <h3 class="text-2xl font-bold mb-2">${item.name}</h3>
+
+          <p class="mb-2">가격: ₩${item.price.toLocaleString()}</p>
+
+          <p class="mb-2">메모: ${item.memo || '없음'}</p>
+
+          <p id="timer-${index}" class="font-bold text-red-500 mb-4"></p>
+
+          <div class="flex gap-3 flex-wrap">
+            <button
+              onclick="cancelPurchase(${index})"
+              class="bg-black text-white px-5 py-2 rounded-2xl"
+            >
+              구매 취소
+            </button>
+
+            <button
+              onclick="extendTime(${index})"
+              class="bg-white border px-5 py-2 rounded-2xl"
+            >
+              시간 연장
+            </button>
+          </div>
+        `;
+
+        cartList.appendChild(div);
+      });
+    }
+
+    function cancelPurchase(index) {
+      totalSaved += cartItems[index].price;
+      cancelTotal += 1;
+
+      document.getElementById('savedMoney').innerText =
+        `₩${totalSaved.toLocaleString()}`;
+
+      document.getElementById('cancelCount').innerText =
+        `${cancelTotal}개`;
+
+      cartItems.splice(index, 1);
+
+      renderCart();
+    }
+
+    function extendTime(index) {
+      cartItems[index].endTime += 30 * 60 * 1000;
+
+      alert('30분 연장되었습니다.');
+    }
+
+    setInterval(() => {
+      cartItems.forEach((item, index) => {
+        const remaining = item.endTime - Date.now();
+
+        const timerElement = document.getElementById(`timer-${index}`);
+
+        if (!timerElement) return;
+
+        if (remaining <= 0) {
+          timerElement.innerText = '구매 가능 상태';
+          timerElement.classList.remove('text-red-500');
+          timerElement.classList.add('text-green-600');
+        } else {
+          const minutes = Math.floor(remaining / 1000 / 60);
+          const seconds = Math.floor((remaining / 1000) % 60);
+
+          timerElement.innerText =
+            `남은 시간: ${minutes}분 ${seconds}초`;
+        }
+      });
+    }, 1000);
+  </script>
+</body>
+</html>
