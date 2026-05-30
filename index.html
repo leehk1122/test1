@@ -108,6 +108,8 @@
     이전
   </button>
 
+  
+
   <button
     onclick="resetCart()"
     class="bg-red-600 text-white px-5 py-3 rounded-xl">
@@ -171,6 +173,20 @@ function addProduct(){
  document.getElementById("memo").value="";
 }
 
+function resetProducts(){
+
+  if(confirm("정말 상품 목록을 초기화하시겠습니까?")){
+
+    products = [];
+
+    saveData();
+
+    renderProducts();
+
+    alert("상품 목록이 초기화되었습니다.");
+  }
+}
+
 function renderProducts(){
  const list=document.getElementById("productList");
  list.innerHTML="";
@@ -232,29 +248,15 @@ function resetCart(){
 
     cartItems = [];
 
+    savedMoney = 0;
+
+    cancelCount = 0;
+
     saveData();
 
     renderCart();
 
-    alert("장바구니가 초기화되었습니다.");
-  }
-}
-
-function resetProducts(){
-
-  if(confirm("정말 상품 목록과 장바구니를 모두 초기화하시겠습니까?")){
-
-    products = [];
-
-    cartItems = [];
-
-    saveData();
-
-    renderProducts();
-
-    renderCart();
-
-    alert("모든 상품이 초기화되었습니다.");
+    alert("장바구니와 절약 통계가 초기화되었습니다.");
   }
 }
 
