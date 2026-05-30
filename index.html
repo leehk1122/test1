@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Delay Cart</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-100">
 
@@ -107,6 +108,33 @@
 </div>
 
 <script>
+async function saveCartItem(item) {
+
+  const { error } = await supabase
+    .from("cart_items")
+    .insert({
+      product_name: item.name,
+      category: item.category,
+      price: item.price,
+      memo: item.memo,
+      end_time: new Date(item.endTime).toISOString()
+    });
+
+  if(error){
+    console.error(error);
+  }
+}
+const SUPABASE_URL =
+"https://leybfsimjxpkzbvijdwu.supabase.co";
+
+const SUPABASE_KEY =
+"여기에 anon key";
+
+const supabase =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 let selectedMinutes = 30;
 let products = JSON.parse(localStorage.getItem("products") || "[]");
 let cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
@@ -174,6 +202,9 @@ function addToCart(i){
    ...p,
    endTime: Date.now() + selectedMinutes*60*1000
  });
+ await saveCartItem(
+   cartItems[cartItems.length - 1]
+ );
  saveData();
  renderCart();
  alert("추가 완료");
