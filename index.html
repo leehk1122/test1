@@ -100,8 +100,27 @@
         </ul>
       </div>
 
-      <button onclick="show('shop')" class="bg-gray-300 px-5 py-3 rounded-xl mt-6">이전</button>
-    </div>
+      <div class="flex gap-3 mt-6 flex-wrap">
+
+  <button
+    onclick="show('shop')"
+    class="bg-gray-300 px-5 py-3 rounded-xl">
+    이전
+  </button>
+
+  <button
+    onclick="resetCart()"
+    class="bg-red-600 text-white px-5 py-3 rounded-xl">
+    장바구니 초기화
+  </button>
+
+  <button
+    onclick="resetProducts()"
+    class="bg-red-800 text-white px-5 py-3 rounded-xl">
+    상품 목록 초기화
+  </button>
+
+</div>
   </section>
 
 </div>
@@ -205,6 +224,38 @@ function cancelPurchase(i){
  cartItems.splice(i,1);
  saveData();
  renderCart();
+}
+
+function resetCart(){
+
+  if(confirm("정말 장바구니를 초기화하시겠습니까?")){
+
+    cartItems = [];
+
+    saveData();
+
+    renderCart();
+
+    alert("장바구니가 초기화되었습니다.");
+  }
+}
+
+function resetProducts(){
+
+  if(confirm("정말 상품 목록과 장바구니를 모두 초기화하시겠습니까?")){
+
+    products = [];
+
+    cartItems = [];
+
+    saveData();
+
+    renderProducts();
+
+    renderCart();
+
+    alert("모든 상품이 초기화되었습니다.");
+  }
 }
 
 setInterval(()=>{
