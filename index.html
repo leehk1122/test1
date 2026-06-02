@@ -87,6 +87,10 @@
           <div>대기 상품</div>
           <div id="waitingCount" class="text-2xl font-bold">0</div>
         </div>
+        <div class="bg-yellow-100 p-4 rounded-xl">
+          <div>구매 완료 금액</div>
+          <div id="purchasedMoney" class="text-2xl font-bold">₩0</div>
+        </div>
       </div>
 
       <div id="cartList"></div>
@@ -128,12 +132,16 @@ let products = JSON.parse(localStorage.getItem("products") || "[]");
 let cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
 let savedMoney = Number(localStorage.getItem("savedMoney") || 0);
 let cancelCount = Number(localStorage.getItem("cancelCount") || 0);
+let purchasedMoney = Number(localStorage.getItem("purchasedMoney") || 0);
+let purchasedCount = Number(localStorage.getItem("purchasedCount") || 0);
 
 function saveData(){
  localStorage.setItem("products",JSON.stringify(products));
  localStorage.setItem("cartItems",JSON.stringify(cartItems));
  localStorage.setItem("savedMoney",savedMoney);
  localStorage.setItem("cancelCount",cancelCount);
+ localStorage.setItem("purchasedMoney",purchasedMoney);
+ localStorage.setItem("purchasedCount",purchasedCount);
 }
 
 function show(id){
@@ -225,7 +233,9 @@ function renderCart(){
      <div>${c.memo||""}</div>
      <div id="timer-${i}" class="font-bold text-red-600 mt-2"></div>
      <button onclick="cancelPurchase(${i})" class="bg-black text-white px-4 py-2 rounded-xl mt-3">구매 취소</button>
+     <button onclick="completePurchase(${i})" class="bg-green-600 text-white px-4 py-2 rounded-xl mt-2">구매 완료</button>
    </div>`;
+  document.getElementById("purchasedMoney").innerText ="₩" + purchasedMoney.toLocaleString();
  });
 }
 
@@ -270,6 +280,32 @@ setInterval(()=>{
  });
 },1000);
 
+function completePurchase(i){
+
+  const item = cartItems[i];
+
+  if(Date.now() < item.endTime){
+
+    alert(
+      "아직 대기 시간이 남아 있습니다."
+    );
+
+    return;
+  }
+
+  purchasedMoney += item.price;
+
+  purchasedCount += 1;
+
+  cartItems.splice(i,1);
+
+  saveData();
+
+  renderCart();
+
+  alert("구매가 기록되었습니다.");
+}
+  
 renderProducts();
 renderCart();
 </script>
