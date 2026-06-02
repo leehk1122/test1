@@ -121,6 +121,12 @@
     장바구니 초기화
   </button>
 
+  <button
+    onclick="resetPurchasedMoney()"
+    class="bg-yellow-600 text-white px-5 py-3 rounded-xl">
+    구매 완료 금액 초기화
+  </button>
+      
 </div>
   </section>
 
@@ -264,6 +270,22 @@ function resetCart(){
     renderCart();
 
     alert("장바구니와 절약 통계가 초기화되었습니다.");
+  }
+}
+
+function resetPurchasedMoney(){
+
+  if(confirm("정말 구매 완료 금액을 초기화하시겠습니까?")){
+
+    purchasedMoney = 0;
+
+    purchasedCount = 0;
+
+    saveData();
+
+    renderCart();
+
+    alert("구매 완료 금액이 초기화되었습니다.");
   }
 }
 
