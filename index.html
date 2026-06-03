@@ -9,6 +9,19 @@
 <body class="bg-gray-100">
 
 <div class="max-w-5xl mx-auto p-6">
+  <div
+id="missionSummary"
+class="bg-yellow-100 p-4 rounded-xl mb-4">
+
+<h3 class="font-bold mb-2">
+🎯 이번 달 미션 진행률
+</h3>
+
+<div id="missionProgress">
+아직 미션을 계산하지 않았습니다.
+</div>
+
+</div>
 
   <section id="home" class="screen">
     <div class="bg-white p-10 rounded-3xl shadow text-center mt-10">
@@ -354,11 +367,21 @@ function renderCart(){
 }
 
 function cancelPurchase(i){
+
  savedMoney += cartItems[i].price;
+
  cancelCount += 1;
+
  cartItems.splice(i,1);
+
  saveData();
+
  renderCart();
+
+ if(missionData.avg){
+   calculateMission();
+ }
+
 }
 
 function resetCart(){
@@ -527,6 +550,57 @@ function calculateMission(){
  </p>
 
  </div>
+
+ `;
+  updateMissionSummary();
+}
+
+function updateMissionSummary(){
+
+ if(!missionData.avg){
+
+  document.getElementById(
+   "missionProgress"
+  ).innerHTML =
+   "아직 미션을 계산하지 않았습니다.";
+
+  return;
+ }
+
+ const easyRate =
+ missionData.easy > 0
+ ? ((savedMoney/missionData.easy)*100)
+     .toFixed(1)
+ : 0;
+
+ const normalRate =
+ missionData.normal > 0
+ ? ((savedMoney/missionData.normal)*100)
+     .toFixed(1)
+ : 0;
+
+ const hardRate =
+ missionData.hard > 0
+ ? ((savedMoney/missionData.hard)*100)
+     .toFixed(1)
+ : 0;
+
+ document.getElementById(
+ "missionProgress"
+ ).innerHTML = `
+
+ Easy :
+ ${easyRate}%
+
+ <br>
+
+ Normal :
+ ${normalRate}%
+
+ <br>
+
+ Hard :
+ ${hardRate}%
 
  `;
 }
