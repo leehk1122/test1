@@ -251,6 +251,27 @@ Number(
 localStorage.getItem("points") || 0
 );
 
+let easyRewardClaimed =
+JSON.parse(
+localStorage.getItem(
+"easyRewardClaimed"
+) || "false"
+);
+
+let normalRewardClaimed =
+JSON.parse(
+localStorage.getItem(
+"normalRewardClaimed"
+) || "false"
+);
+
+let hardRewardClaimed =
+JSON.parse(
+localStorage.getItem(
+"hardRewardClaimed"
+) || "false"
+);
+
 function saveData(){
  localStorage.setItem("products",JSON.stringify(products));
  localStorage.setItem("cartItems",JSON.stringify(cartItems));
@@ -265,6 +286,20 @@ JSON.stringify(missionData)
  localStorage.setItem(
  "points",
  points
+);
+localStorage.setItem(
+"easyRewardClaimed",
+easyRewardClaimed
+);
+
+localStorage.setItem(
+"normalRewardClaimed",
+normalRewardClaimed
+);
+
+localStorage.setItem(
+"hardRewardClaimed",
+hardRewardClaimed
 );
 }
 
@@ -407,9 +442,9 @@ function resetCart(){
 
     cancelCount = 0;
 
-    missionData.easyReward = false;
-    missionData.normalReward = false;
-    missionData.hardReward = false;
+    easyRewardClaimed = false;
+    normalRewardClaimed = false;
+    hardRewardClaimed = false;
 
     saveData();
 
@@ -515,27 +550,32 @@ missionData = {
  easy,
  normal,
  hard,
-  easyReward : false,
- normalReward : false,
- hardReward : false
 };
 
  saveData();
 
 const easyRate =
  missionData.easy > 0
- ? ((savedMoney/missionData.easy)*100)
-     .toFixed(1)
+ ? Math.min(
+     (savedMoney/missionData.easy)*100,
+     100
+   ).toFixed(1)
  : 0;
 
- const normalRate =
- normal > 0
- ? ((savedMoney/normal)*100).toFixed(1)
+const easyRate =
+ missionData.normal > 0
+ ? Math.min(
+     (savedMoney/missionData.normal)*100,
+     100
+   ).toFixed(1)
  : 0;
 
- const hardRate =
- hard > 0
- ? ((savedMoney/hard)*100).toFixed(1)
+const easyRate =
+ missionData.hard > 0
+ ? Math.min(
+     (savedMoney/missionData.hard)*100,
+     100
+   ).toFixed(1)
  : 0;
 
  document.getElementById(
@@ -575,73 +615,45 @@ const easyRate =
  </div>
 
  `;
-  if(
- savedMoney >= missionData.easy &&
- !missionData.easyReward
-){
-
- points += 50;
-
- missionData.easyReward = true;
-}
-
-if(
- savedMoney >= missionData.normal &&
- !missionData.normalReward
-){
-
- points += 100;
-
- missionData.normalReward = true;
-}
-
-if(
- savedMoney >= missionData.hard &&
- !missionData.hardReward
-){
-
- points += 300;
-
- missionData.hardReward = true;
-}
+ 
   saveData();
   updateMissionSummary();
 }
 
 function updateMissionSummary(){
 
-  if(
+if(
  savedMoney >= missionData.easy &&
- !missionData.easyReward
+ !easyRewardClaimed
 ){
 
  points += 50;
 
- missionData.easyReward = true;
+ easyRewardClaimed = true;
 
  saveData();
 }
 
 if(
  savedMoney >= missionData.normal &&
- !missionData.normalReward
+ !normalRewardClaimed
 ){
 
  points += 100;
 
- missionData.normalReward = true;
+ normalRewardClaimed = true;
 
  saveData();
 }
 
 if(
  savedMoney >= missionData.hard &&
- !missionData.hardReward
+ !hardRewardClaimed
 ){
 
  points += 300;
 
- missionData.hardReward = true;
+ hardRewardClaimed = true;
 
  saveData();
 }
