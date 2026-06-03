@@ -58,6 +58,24 @@
 
       <textarea id="memo" class="border p-3 rounded-xl w-full mb-4" placeholder="왜 사고 싶은지 적어보세요"></textarea>
 
+      <div class="mt-3">
+  <label class="block mb-2 font-semibold">
+    개별 대기 시간 (선택)
+  </label>
+
+  <input
+    id="customTimer"
+    type="number"
+    min="0"
+    placeholder="비워두면 기본 대기 시간 사용"
+    class="border p-3 rounded-xl w-full"
+  />
+
+  <p class="text-sm text-gray-500 mt-1">
+    분 단위 입력 (예: 60 = 1시간)
+  </p>
+</div>
+
       <button onclick="addProduct()" class="bg-black text-white px-5 py-3 rounded-xl mb-6">상품 추가</button>
 
       <div id="productList" class="grid md:grid-cols-2 gap-4"></div>
@@ -170,16 +188,18 @@ function addProduct(){
  const name=document.getElementById("name").value;
  const price=Number(document.getElementById("price").value);
  const memo=document.getElementById("memo").value;
+ const customTimer=Number(document.getElementById("customTimer").value) || 0;
 
  if(!name || !price){ alert("상품명과 가격 입력"); return; }
 
- products.push({category,name,price,memo});
+ products.push({category,name,price,memo,customTimer});
  saveData();
  renderProducts();
 
  document.getElementById("name").value="";
  document.getElementById("price").value="";
  document.getElementById("memo").value="";
+ document.getElementById("customTimer").value="";
 }
 
 function resetProducts(){
@@ -214,10 +234,18 @@ function renderProducts(){
 
 function addToCart(i){
  const p=products[i];
- cartItems.push({
+ const finalMinutes =
+  p.customTimer > 0
+    ? p.customTimer
+    : selectedMinutes;
+  cartItems.push({
    ...p,
-   endTime: Date.now() + selectedMinutes*60*1000
- });
+   endTime:
+      Date.now() +
+      finalMinutes * 60 * 1000,
+   usedTimer:
+      finalMinutes
+});
  saveData();
  renderCart();
  alert("추가 완료");
@@ -240,6 +268,10 @@ function renderCart(){
      <div class="font-bold text-xl">${c.name}</div>
      <div>₩${c.price.toLocaleString()}</div>
      <div>${c.memo||""}</div>
+     <div class="text-blue-600 font-semibold">
+  설정 시간 :
+  ${c.usedTimer}분
+</div>
      <div id="timer-${i}" class="font-bold text-red-600 mt-2"></div>
      <button onclick="cancelPurchase(${i})" class="bg-black text-white px-4 py-2 rounded-xl mt-3">구매 취소</button>
      <button onclick="completePurchase(${i})" class="bg-green-600 text-white px-4 py-2 rounded-xl mt-2">구매 완료</button>
