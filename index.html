@@ -21,6 +21,11 @@ class="bg-yellow-100 p-4 rounded-xl mb-4">
 아직 미션을 계산하지 않았습니다.
 </div>
 
+<div class="mt-3 font-bold text-green-700">
+보유 포인트 :
+<span id="pointDisplay">0</span> P
+</div>
+
 </div>
 
   <section id="home" class="screen">
@@ -241,6 +246,10 @@ let missionData =
 JSON.parse(
 localStorage.getItem("missionData") || "{}"
 );
+let points =
+Number(
+localStorage.getItem("points") || 0
+);
 
 function saveData(){
  localStorage.setItem("products",JSON.stringify(products));
@@ -252,6 +261,10 @@ function saveData(){
  localStorage.setItem(
 "missionData",
 JSON.stringify(missionData)
+);
+ localStorage.setItem(
+ "points",
+ points
 );
 }
 
@@ -394,9 +407,15 @@ function resetCart(){
 
     cancelCount = 0;
 
+    missionData.easyReward = false;
+    missionData.normalReward = false;
+    missionData.hardReward = false;
+
     saveData();
 
     renderCart();
+
+    updateMissionSummary();
 
     alert("장바구니와 절약 통계가 초기화되었습니다.");
   }
@@ -500,9 +519,10 @@ function calculateMission(){
 
  saveData();
 
- const easyRate =
- easy > 0
- ? ((savedMoney/easy)*100).toFixed(1)
+const easyRate =
+ missionData.easy > 0
+ ? ((savedMoney/missionData.easy)*100)
+     .toFixed(1)
  : 0;
 
  const normalRate =
@@ -552,6 +572,36 @@ function calculateMission(){
  </div>
 
  `;
+  if(
+ savedMoney >= missionData.easy &&
+ !missionData.easyReward
+){
+
+ points += 50;
+
+ missionData.easyReward = true;
+}
+
+if(
+ savedMoney >= missionData.normal &&
+ !missionData.normalReward
+){
+
+ points += 100;
+
+ missionData.normalReward = true;
+}
+
+if(
+ savedMoney >= missionData.hard &&
+ !missionData.hardReward
+){
+
+ points += 300;
+
+ missionData.hardReward = true;
+}
+  saveData();
   updateMissionSummary();
 }
 
@@ -569,20 +619,26 @@ function updateMissionSummary(){
 
  const easyRate =
  missionData.easy > 0
- ? ((savedMoney/missionData.easy)*100)
-     .toFixed(1)
+ ? Math.min(
+     ((savedMoney/missionData.easy)*100),
+     100
+   ).toFixed(1)
  : 0;
 
- const normalRate =
+const normalRate =
  missionData.normal > 0
- ? ((savedMoney/missionData.normal)*100)
-     .toFixed(1)
+ ? Math.min(
+     ((savedMoney/missionData.normal)*100),
+     100
+   ).toFixed(1)
  : 0;
 
- const hardRate =
+const hardRate =
  missionData.hard > 0
- ? ((savedMoney/missionData.hard)*100)
-     .toFixed(1)
+ ? Math.min(
+     ((savedMoney/missionData.hard)*100),
+     100
+   ).toFixed(1)
  : 0;
 
  document.getElementById(
@@ -603,6 +659,10 @@ function updateMissionSummary(){
  ${hardRate}%
 
  `;
+
+  document.getElementById(
+ "pointDisplay"
+).innerText = points;
 }
   
 renderProducts();
