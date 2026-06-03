@@ -509,13 +509,16 @@ function calculateMission(){
  const hard =
  Math.round(avg*0.20);
 
- missionData = {
+missionData = {
  m1,m2,m3,
  avg,
  easy,
  normal,
- hard
- };
+ hard,
+  easyReward : false,
+ normalReward : false,
+ hardReward : false
+};
 
  saveData();
 
@@ -606,6 +609,42 @@ if(
 }
 
 function updateMissionSummary(){
+
+  if(
+ savedMoney >= missionData.easy &&
+ !missionData.easyReward
+){
+
+ points += 50;
+
+ missionData.easyReward = true;
+
+ saveData();
+}
+
+if(
+ savedMoney >= missionData.normal &&
+ !missionData.normalReward
+){
+
+ points += 100;
+
+ missionData.normalReward = true;
+
+ saveData();
+}
+
+if(
+ savedMoney >= missionData.hard &&
+ !missionData.hardReward
+){
+
+ points += 300;
+
+ missionData.hardReward = true;
+
+ saveData();
+}
 
  if(!missionData.avg){
 
