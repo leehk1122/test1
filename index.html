@@ -176,6 +176,14 @@ class="bg-blue-600 text-white px-8 py-4 rounded-2xl">
     class="bg-yellow-600 text-white px-5 py-3 rounded-xl">
     구매 완료 금액 초기화
   </button>
+
+  <button onclick="saveToDeposit()" class="bg-blue-500 text-white px-4 py-2 rounded">
+적금
+</button>
+
+<button onclick="saveToInvestment()" class="bg-green-500 text-white px-4 py-2 rounded">
+투자
+</button>
       
 </div>
   </section>
@@ -271,6 +279,20 @@ localStorage.getItem(
 "hardRewardClaimed"
 ) || "false"
 );
+
+let pet = {
+  level: 1,
+  exp: 0,
+  hunger: 100,
+  happiness: 50
+};
+
+let finance = {
+  savings: 0,
+  investment: 0,
+  deposit: 0,
+  profit: 0
+};
 
 function saveData(){
  localStorage.setItem("products",JSON.stringify(products));
@@ -427,6 +449,16 @@ function cancelPurchase(i){
  renderCart();
 
  updateMissionSummary();
+
+pet.exp += Math.floor(cartItems[i].price / 10000);
+
+if(pet.exp >= pet.level * 100){
+  pet.level += 1;
+  pet.exp = 0;
+  alert("다마고치가 성장했습니다!");
+}
+
+saveData();
  
 
 }
@@ -713,6 +745,38 @@ const hardRate =
   document.getElementById(
  "pointDisplay"
 ).innerText = points;
+}
+
+function saveToDeposit(){
+  let amount = savedMoney * 0.5;
+
+  finance.deposit += amount;
+
+  savedMoney -= amount;
+
+  alert("적금으로 " + amount + "원 이동");
+  saveData();
+  renderCart();
+}
+
+function saveToInvestment(){
+
+ let amount = savedMoney * 0.3;
+
+ let randomRate =
+   Math.random() * 0.2 - 0.1; // -10% ~ +10%
+
+ let result = amount + amount * randomRate;
+
+ finance.investment += result;
+
+ savedMoney -= amount;
+
+ finance.profit += result - amount;
+
+ alert("투자 완료: " + Math.round(result) + "원");
+ saveData();
+ renderCart();
 }
   
 renderProducts();
