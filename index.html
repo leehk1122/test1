@@ -193,6 +193,11 @@ class="bg-blue-600 text-white px-8 py-4 rounded-2xl">
 <button onclick="saveToInvestment()" class="bg-green-500 text-white px-4 py-2 rounded">
 투자
 </button>
+
+<button onclick="withdrawDeposit()" class="bg-blue-700 text-white px-4 py-2 rounded">적금 출금
+</button>
+
+<button onclick="withdrawInvestment()" class="bg-green-700 text-white px-4 py-2 rounded">투자 회수</button>
       
 </div>
   </section>
@@ -877,6 +882,78 @@ function saveToInvestment(){
    Math.round(result)
      .toLocaleString() +
    "원"
+ );
+}
+
+function withdrawDeposit(){
+
+ let amount = Number(
+   prompt(
+     "출금할 적금 금액을 입력하세요",
+     "10000"
+   )
+ );
+
+ if(!amount || amount <= 0){
+   return;
+ }
+
+ if(amount > finance.deposit){
+
+   alert(
+     "적금 금액보다 많이 출금할 수 없습니다."
+   );
+
+   return;
+ }
+
+ finance.deposit -= amount;
+
+ savedMoney += amount;
+
+ saveData();
+
+ renderCart();
+
+ alert(
+   amount.toLocaleString() +
+   "원이 절약 금액으로 이동되었습니다."
+ );
+}
+
+function withdrawInvestment(){
+
+ let amount = Number(
+   prompt(
+     "회수할 투자 금액을 입력하세요",
+     "10000"
+   )
+ );
+
+ if(!amount || amount <= 0){
+   return;
+ }
+
+ if(amount > finance.investment){
+
+   alert(
+     "현재 투자 금액보다 많이 회수할 수 없습니다."
+   );
+
+   return;
+ }
+
+ finance.investment -= amount;
+
+ savedMoney += amount;
+
+ saveData();
+
+ renderCart();
+
+ alert(
+   amount.toLocaleString() +
+   "원이 투자 계좌에서 회수되었습니다."
  );
 }
   
