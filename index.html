@@ -141,6 +141,15 @@ class="bg-blue-600 text-white px-8 py-4 rounded-2xl">
           <div>구매 완료 금액</div>
           <div id="purchasedMoney" class="text-2xl font-bold">₩0</div>
         </div>
+        <div class="bg-blue-100 p-4 rounded-xl">
+          <div>적금 금액</div>
+          <div id="depositMoney" class="text-2xl font-bold">₩0</div>
+        </div>
+        
+        <div class="bg-green-100 p-4 rounded-xl">
+          <div>투자 금액</div>
+          <div id="investmentMoney" class="text-2xl font-bold">₩0</div>
+        </div>
       </div>
 
       <div id="cartList"></div>
@@ -287,12 +296,12 @@ let pet = {
   happiness: 50
 };
 
-let finance = {
-  savings: 0,
-  investment: 0,
-  deposit: 0,
-  profit: 0
-};
+let finance =
+JSON.parse(
+ localStorage.getItem("finance")
+ ||
+ '{"deposit":0,"investment":0,"profit":0}'
+);
 
 function saveData(){
  localStorage.setItem("products",JSON.stringify(products));
@@ -322,6 +331,11 @@ normalRewardClaimed
 localStorage.setItem(
 "hardRewardClaimed",
 hardRewardClaimed
+);
+
+  localStorage.setItem(
+ "finance",
+ JSON.stringify(finance)
 );
 }
 
@@ -415,6 +429,20 @@ function renderCart(){
 
  document.getElementById("purchasedMoney").innerText =
    "₩" + purchasedMoney.toLocaleString();
+ 
+ document.getElementById(
+  "depositMoney"
+  ).innerText =
+  "₩" +
+ finance.deposit.toLocaleString();
+  
+  document.getElementById(
+  "investmentMoney"
+  ).innerText =
+  "₩" +
+  Math.round(
+   finance.investment
+  ).toLocaleString();
 
  const list=document.getElementById("cartList");
  list.innerHTML="";
@@ -450,12 +478,29 @@ function cancelPurchase(i){
 
  updateMissionSummary();
 
-pet.exp += Math.floor(cartItems[i].price / 10000);
+const item = cartItems[i];
+
+savedMoney += item.price;
+
+cancelCount += 1;
+
+pet.exp += Math.floor(
+ item.price / 10000
+);
 
 if(pet.exp >= pet.level * 100){
   pet.level += 1;
   pet.exp = 0;
   alert("다마고치가 성장했습니다!");
+}
+
+cartItems.splice(i,1);
+
+saveData();
+
+renderCart();
+
+updateMissionSummary();
 }
 
 saveData();
@@ -748,39 +793,96 @@ const hardRate =
 }
 
 function saveToDeposit(){
-  let amount = savedMoney * 0.5;
+
+  let amount = Number(
+    prompt(
+      "적금할 금액을 입력하세요",
+      "10000"
+    )
+  );
+
+  if(!amount || amount <= 0){
+    return;
+  }
+
+  if(amount > savedMoney){
+
+    alert(
+      "절약 금액보다 많이 입력할 수 없습니다."
+    );
+
+    return;
+  }
 
   finance.deposit += amount;
 
   savedMoney -= amount;
 
-  alert("적금으로 " + amount + "원 이동");
   saveData();
+
   renderCart();
+
+  alert(
+    amount.toLocaleString() +
+    "원이 적금 계좌로 이동되었습니다."
+  );
 }
 
 function saveToInvestment(){
 
- let amount = savedMoney * 0.3;
+ let amount = Number(
+   prompt(
+     "투자할 금액을 입력하세요",
+     "10000"
+   )
+ );
+
+ if(!amount || amount <= 0){
+   return;
+ }
+
+ if(amount > savedMoney){
+
+   alert(
+     "절약 금액보다 많이 입력할 수 없습니다."
+   );
+
+   return;
+ }
 
  let randomRate =
-   Math.random() * 0.2 - 0.1; // -10% ~ +10%
+   Math.random() * 0.2 - 0.1;
 
- let result = amount + amount * randomRate;
+ let result =
+   amount +
+   amount * randomRate;
 
  finance.investment += result;
 
+ finance.profit +=
+   result - amount;
+
  savedMoney -= amount;
 
- finance.profit += result - amount;
-
- alert("투자 완료: " + Math.round(result) + "원");
  saveData();
+
  renderCart();
+
+ alert(
+   "투자 완료\n\n" +
+   "투자금 : " +
+   amount.toLocaleString() +
+   "원\n" +
+   "현재 가치 : " +
+   Math.round(result)
+     .toLocaleString() +
+   "원"
+ );
 }
   
 renderProducts();
 renderCart();
+updateMissionSummary();
 </script>
 
 </body>
