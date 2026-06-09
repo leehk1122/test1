@@ -198,6 +198,11 @@ class="bg-blue-600 text-white px-8 py-4 rounded-2xl">
 
 <button onclick="withdrawDeposit()" class="bg-blue-700 text-white px-4 py-2 rounded">적금 출금
 </button>
+<button
+onclick="withdrawSpecificDeposit()"
+class="bg-blue-900 text-white px-4 py-2 rounded">
+상품별 적금 출금
+</button>
 
 <button onclick="withdrawInvestment()" class="bg-green-700 text-white px-4 py-2 rounded">투자 회수</button>
       
@@ -529,6 +534,8 @@ function resetCart(){
     savedMoney = 0;
 
     cancelCount = 0;
+    finance.depositHistory = [];
+    finance.investmentHistory = [];
 
     easyRewardClaimed = false;
     normalRewardClaimed = false;
@@ -1008,6 +1015,11 @@ Math.floor(
  savedMoney + amount
 );
 
+if(finance.deposit <= 0){
+   finance.deposit = 0;
+   finance.depositHistory = [];
+}
+
  saveData();
 
  renderCart();
@@ -1050,6 +1062,11 @@ Math.floor(
  savedMoney + amount
 );
 
+if(finance.investment <= 0){
+   finance.investment = 0;
+   finance.investmentHistory = [];
+}
+
  saveData();
 
  renderCart();
@@ -1069,16 +1086,17 @@ function showFinanceHistory(){
    finance.depositHistory.length
  ){
 
-   finance.depositHistory.forEach(item=>{
+   finance.depositHistory.forEach((item,itemIndex)=>{
 
      text +=
-     item.product +
-     "\n" +
-     item.amount.toLocaleString() +
-     "원\n" +
-     item.rate +
-     "%\n\n";
-   });
+(itemIndex + 1) +
+". " +
+item.product +
+"\n" +
+item.amount.toLocaleString() +
+"원\n" +
+item.rate +
+"%\n\n";
 
  }else{
 
@@ -1112,6 +1130,97 @@ function showFinanceHistory(){
  }
 
  alert(text);
+}
+
+function withdrawSpecificDeposit(){
+
+ if(
+   !finance.depositHistory ||
+   finance.depositHistory.length === 0
+ ){
+   alert("적금 내역이 없습니다.");
+   return;
+ }
+
+ let menu =
+ "출금할 적금 선택\n\n";
+
+ finance.depositHistory.forEach(
+ (item,index)=>{
+
+   menu +=
+   (index+1) +
+   ". " +
+   item.product +
+   " (" +
+   item.amount.toLocaleString() +
+   "원)\n";
+ });
+
+ let choice =
+ Number(prompt(menu));
+
+ if(
+   !choice ||
+   choice < 1 ||
+   choice > finance.depositHistory.length
+ ){
+   return;
+ }
+
+ let target =
+ finance.depositHistory[
+   choice-1
+ ];
+
+ let amount =
+ Number(
+   prompt(
+     "출금 금액 입력\n현재 : " +
+     target.amount.toLocaleString() +
+     "원"
+   )
+ );
+
+ if(
+   !amount ||
+   amount <= 0
+ ){
+   return;
+ }
+
+ if(
+   amount > target.amount
+ ){
+   alert("현재 적금 금액보다 많습니다.");
+   return;
+ }
+
+ amount =
+ Math.floor(amount);
+
+ target.amount -= amount;
+
+ finance.deposit -= amount;
+
+ savedMoney += amount;
+
+ if(target.amount <= 0){
+
+   finance.depositHistory.splice(
+     choice-1,
+     1
+   );
+ }
+
+ saveData();
+
+ renderCart();
+
+ alert(
+   amount.toLocaleString() +
+   "원 출금 완료"
+ );
 }
   
 renderProducts();
