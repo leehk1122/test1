@@ -309,6 +309,20 @@ JSON.parse(
 );
 
 function saveData(){
+ savedMoney =
+ Math.floor(savedMoney);
+
+ purchasedMoney =
+ Math.floor(purchasedMoney);
+
+ finance.deposit =
+ Math.floor(finance.deposit);
+
+ finance.investment =
+ Math.floor(finance.investment);
+
+ finance.profit =
+ Math.floor(finance.profit);
  localStorage.setItem("products",JSON.stringify(products));
  localStorage.setItem("cartItems",JSON.stringify(cartItems));
  localStorage.setItem("savedMoney",savedMoney);
@@ -471,9 +485,21 @@ function renderCart(){
 
 function cancelPurchase(i){
 
- savedMoney += cartItems[i].price;
+ const item = cartItems[i];
+
+ savedMoney += item.price;
 
  cancelCount += 1;
+
+ pet.exp += Math.floor(
+   item.price / 10000
+ );
+
+ if(pet.exp >= pet.level * 100){
+   pet.level += 1;
+   pet.exp = 0;
+   alert("다마고치가 성장했습니다!");
+ }
 
  cartItems.splice(i,1);
 
@@ -482,30 +508,6 @@ function cancelPurchase(i){
  renderCart();
 
  updateMissionSummary();
-
-const item = cartItems[i];
-
-savedMoney += item.price;
-
-cancelCount += 1;
-
-pet.exp += Math.floor(
- item.price / 10000
-);
-
-if(pet.exp >= pet.level * 100){
-  pet.level += 1;
-  pet.exp = 0;
-  alert("다마고치가 성장했습니다!");
-}
-
-cartItems.splice(i,1);
-
-saveData();
-
-renderCart();
-
-updateMissionSummary();
 }
 
 saveData();
@@ -819,9 +821,15 @@ function saveToDeposit(){
     return;
   }
 
-  finance.deposit += amount;
+  finance.deposit =
+Math.floor(
+ finance.deposit + amount
+);
 
-  savedMoney -= amount;
+  savedMoney =
+Math.floor(
+ savedMoney - amount
+);
 
   saveData();
 
@@ -858,16 +866,26 @@ function saveToInvestment(){
  let randomRate =
    Math.random() * 0.2 - 0.1;
 
- let result =
-   amount +
-   amount * randomRate;
+ let result = Math.floor(
+  amount +
+  amount * randomRate
+);
 
- finance.investment += result;
+ finance.investment =
+Math.floor(
+ finance.investment + result
+);
 
- finance.profit +=
-   result - amount;
+ finance.profit =
+Math.floor(
+ finance.profit +
+ (result - amount)
+);
 
- savedMoney -= amount;
+ savedMoney =
+Math.floor(
+ savedMoney - amount
+);
 
  saveData();
 
@@ -907,9 +925,15 @@ function withdrawDeposit(){
    return;
  }
 
- finance.deposit -= amount;
+ finance.deposit =
+Math.floor(
+ finance.deposit - amount
+);
 
- savedMoney += amount;
+ savedMoney =
+Math.floor(
+ savedMoney + amount
+);
 
  saveData();
 
@@ -943,9 +967,15 @@ function withdrawInvestment(){
    return;
  }
 
- finance.investment -= amount;
+ finance.investment =
+Math.floor(
+ finance.investment - amount
+);
 
- savedMoney += amount;
+ savedMoney =
+Math.floor(
+ savedMoney + amount
+);
 
  saveData();
 
