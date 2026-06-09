@@ -189,9 +189,11 @@ class="bg-blue-600 text-white px-8 py-4 rounded-2xl">
   <button onclick="saveToDeposit()" class="bg-blue-500 text-white px-4 py-2 rounded">
 적금
 </button>
-
 <button onclick="saveToInvestment()" class="bg-green-500 text-white px-4 py-2 rounded">
 투자
+</button>
+<button onclick="showFinanceHistory()" class="bg-purple-600 text-white px-4 py-2 rounded">
+내역 보기
 </button>
 
 <button onclick="withdrawDeposit()" class="bg-blue-700 text-white px-4 py-2 rounded">적금 출금
@@ -257,6 +259,10 @@ class="bg-gray-300 px-5 py-3 rounded-xl">
 </section>
 
 <script>
+const depositProducts = [{name:"국민은행 청년적금", rate:4.2},{ name:"신한은행 자유적금", rate:3.8},{ name:"카카오뱅크 정기적금", rate:4.0},
+{ name:"토스뱅크 자유적금", rate:3.9}];
+const investmentProducts = [{ name:"삼성전자", risk:"중"},{ name:"TIGER 미국S&P500", risk:"낮음"},{ name:"KODEX 나스닥100", risk:"중"},
+{ name:"테슬라", risk:"높음"},{ name:"엔비디아", risk:"높음"}];
 let selectedMinutes = 30;
 let products = JSON.parse(localStorage.getItem("products") || "[]");
 let cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
@@ -305,8 +311,7 @@ let finance =
 JSON.parse(
  localStorage.getItem("finance")
  ||
- '{"deposit":0,"investment":0,"profit":0}'
-);
+ '{"deposit":0,"investment":0,"profit":0,"depositHistory":[],"investmentHistory":[]}');
 
 function saveData(){
  savedMoney =
@@ -801,52 +806,37 @@ const hardRate =
 
 function saveToDeposit(){
 
-  let amount = Number(
-    prompt(
-      "적금할 금액을 입력하세요",
-      "10000"
-    )
-  );
+ let menu = "적금 상품 선택\n\n";
 
-  if(!amount || amount <= 0){
-    return;
-  }
+ depositProducts.forEach((p,index)=>{
+   menu +=
+   (index+1) +
+   ". " +
+   p.name +
+   " (" +
+   p.rate +
+   "%)\n";
+ });
 
-  if(amount > savedMoney){
+ let choice =
+ Number(prompt(menu));
 
-    alert(
-      "절약 금액보다 많이 입력할 수 없습니다."
-    );
+ if(
+   !choice ||
+   choice < 1 ||
+   choice > depositProducts.length
+ ){
+   return;
+ }
 
-    return;
-  }
+ let product =
+ depositProducts[choice-1];
 
-  finance.deposit =
-Math.floor(
- finance.deposit + amount
-);
-
-  savedMoney =
-Math.floor(
- savedMoney - amount
-);
-
-  saveData();
-
-  renderCart();
-
-  alert(
-    amount.toLocaleString() +
-    "원이 적금 계좌로 이동되었습니다."
-  );
-}
-
-function saveToInvestment(){
-
- let amount = Number(
+ let amount =
+ Number(
    prompt(
-     "투자할 금액을 입력하세요",
-     "10000"
+     product.name +
+     "\n\n적금 금액 입력"
    )
  );
 
@@ -863,42 +853,125 @@ function saveToInvestment(){
    return;
  }
 
- let randomRate =
-   Math.random() * 0.2 - 0.1;
+ amount = Math.floor(amount);
 
- let result = Math.floor(
-  amount +
-  amount * randomRate
-);
+ finance.deposit += amount;
 
- finance.investment =
-Math.floor(
- finance.investment + result
-);
+ if(!finance.depositHistory){
+   finance.depositHistory = [];
+ }
 
- finance.profit =
-Math.floor(
- finance.profit +
- (result - amount)
-);
+ finance.depositHistory.push({
+   product: product.name,
+   rate: product.rate,
+   amount: amount,
+   date: new Date().toLocaleDateString()
+ });
 
- savedMoney =
-Math.floor(
- savedMoney - amount
-);
+ savedMoney -= amount;
 
  saveData();
 
  renderCart();
 
  alert(
-   "투자 완료\n\n" +
-   "투자금 : " +
+   product.name +
+   "\n" +
+   amount.toLocaleString() +
+   "원 가입 완료"
+ );
+}
+  
+function saveToInvestment(){
+
+ let menu = "투자 상품 선택\n\n";
+
+ investmentProducts.forEach((p,index)=>{
+   menu +=
+   (index+1) +
+   ". " +
+   p.name +
+   " (위험도:" +
+   p.risk +
+   ")\n";
+ });
+
+ let choice =
+ Number(prompt(menu));
+
+ if(
+   !choice ||
+   choice < 1 ||
+   choice > investmentProducts.length
+ ){
+   return;
+ }
+
+ let product =
+ investmentProducts[choice-1];
+
+ let amount =
+ Number(
+   prompt(
+     product.name +
+     "\n\n투자 금액 입력"
+   )
+ );
+
+ if(!amount || amount <= 0){
+   return;
+ }
+
+ if(amount > savedMoney){
+
+   alert(
+     "절약 금액보다 많이 입력할 수 없습니다."
+   );
+
+   return;
+ }
+
+ amount = Math.floor(amount);
+
+ let randomRate =
+ Math.random() * 0.2 - 0.1;
+
+ let result =
+ Math.floor(
+   amount +
+   amount * randomRate
+ );
+
+ finance.investment += result;
+
+ finance.profit +=
+ (result - amount);
+
+ if(!finance.investmentHistory){
+   finance.investmentHistory = [];
+ }
+
+ finance.investmentHistory.push({
+   product: product.name,
+   amount: amount,
+   currentValue: result,
+   risk: product.risk,
+   date: new Date().toLocaleDateString()
+ });
+
+ savedMoney -= amount;
+
+ saveData();
+
+ renderCart();
+
+ alert(
+   product.name +
+   "\n\n투자금 : " +
    amount.toLocaleString() +
    "원\n" +
    "현재 가치 : " +
-   Math.round(result)
-     .toLocaleString() +
+   result.toLocaleString() +
    "원"
  );
 }
@@ -985,6 +1058,60 @@ Math.floor(
    amount.toLocaleString() +
    "원이 투자 계좌에서 회수되었습니다."
  );
+}
+
+function showFinanceHistory(){
+
+ let text = "===== 적금 내역 =====\n\n";
+
+ if(
+   finance.depositHistory &&
+   finance.depositHistory.length
+ ){
+
+   finance.depositHistory.forEach(item=>{
+
+     text +=
+     item.product +
+     "\n" +
+     item.amount.toLocaleString() +
+     "원\n" +
+     item.rate +
+     "%\n\n";
+   });
+
+ }else{
+
+   text += "내역 없음\n\n";
+ }
+
+ text += "\n===== 투자 내역 =====\n\n";
+
+ if(
+   finance.investmentHistory &&
+   finance.investmentHistory.length
+ ){
+
+   finance.investmentHistory.forEach(item=>{
+
+     text +=
+     item.product +
+     "\n" +
+     item.amount.toLocaleString() +
+     "원 → " +
+     item.currentValue.toLocaleString() +
+     "원\n" +
+     "위험도 : " +
+     item.risk +
+     "\n\n";
+   });
+
+ }else{
+
+   text += "내역 없음";
+ }
+
+ alert(text);
 }
   
 renderProducts();
