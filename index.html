@@ -46,6 +46,12 @@ class="bg-blue-600 text-white px-8 py-4 rounded-2xl">
 소비 분석 & 미션
 </button>
 
+<button
+onclick="show('pet')"
+class="bg-pink-500 text-white px-8 py-4 rounded-2xl">
+🐣 다마고치
+</button>
+
 </div>
     </div>
   </section>
@@ -210,6 +216,84 @@ class="bg-blue-900 text-white px-4 py-2 rounded">
 
 </div>
 
+  <section id="pet" class="screen hidden">
+
+<div class="bg-white p-8 rounded-3xl shadow mt-10">
+
+<h2 class="text-3xl font-bold mb-6">
+🐣 나의 다마고치
+</h2>
+
+<div class="text-center">
+
+<div
+id="petCharacter"
+class="text-8xl mb-4">
+🥚
+</div>
+
+<p>
+레벨 :
+<span id="petLevel">
+1
+</span>
+</p>
+
+<p>
+경험치 :
+<span id="petExp">
+0
+</span>
+</p>
+
+<p>
+행복도 :
+<span id="petHappy">
+50
+</span>
+</p>
+
+<p>
+배고픔 :
+<span id="petHunger">
+100
+</span>
+</p>
+
+</div>
+
+<div class="flex gap-3 mt-6">
+
+<button
+onclick="feedPet()"
+class="bg-yellow-500 text-white px-5 py-3 rounded-xl">
+
+먹이주기
+
+</button>
+
+<button
+onclick="playPet()"
+class="bg-green-500 text-white px-5 py-3 rounded-xl">
+
+놀아주기
+
+</button>
+
+<button
+onclick="show('home')"
+class="bg-gray-300 px-5 py-3 rounded-xl">
+
+홈으로
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
   <section id="mission" class="screen hidden">
 
 <div class="bg-white p-8 rounded-3xl shadow mt-10">
@@ -304,12 +388,12 @@ localStorage.getItem(
 ) || "false"
 );
 
-let pet = {
-  level: 1,
-  exp: 0,
-  hunger: 100,
-  happiness: 50
-};
+let pet =
+JSON.parse(
+ localStorage.getItem("pet")
+ ||
+ '{"level":1,"exp":0,"hunger":100,"happiness":50}'
+);
 
 let finance =
 JSON.parse(
@@ -364,6 +448,10 @@ hardRewardClaimed
   localStorage.setItem(
  "finance",
  JSON.stringify(finance)
+);
+localStorage.setItem(
+ "pet",
+ JSON.stringify(pet)
 );
 }
 
@@ -1192,10 +1280,60 @@ alert(
 
 showFinanceHistory();
 }
+
+function renderPet(){
+
+ document.getElementById(
+  "petLevel"
+ ).innerText =
+ pet.level;
+
+ document.getElementById(
+  "petExp"
+ ).innerText =
+ pet.exp;
+
+ document.getElementById(
+  "petHappy"
+ ).innerText =
+ pet.happiness;
+
+ document.getElementById(
+  "petHunger"
+ ).innerText =
+ pet.hunger;
+}
+
+function feedPet(){
+
+ pet.hunger =
+ Math.min(
+   100,
+   pet.hunger + 10
+ );
+
+ saveData();
+
+ renderPet();
+}
+
+function playPet(){
+
+ pet.happiness =
+ Math.min(
+   100,
+   pet.happiness + 10
+ );
+
+ saveData();
+
+ renderPet();
+}
   
 renderProducts();
 renderCart();
 updateMissionSummary();
+renderPet();
 </script>
 
 </body>
