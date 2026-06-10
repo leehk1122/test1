@@ -603,9 +603,12 @@ function cancelPurchase(i){
    pet.exp = 0;
 
    if(pet.level === 2){
-      alert("🎉 알이 부화했습니다! 🐥");
+      alert("🎉 알이 부화했습니다! 🐣");
    }
-   else if(pet.level === 5){
+    else if(pet.level === 5){
+      alert("🎉 다마고치가 성장했습니다! 🐥");
+   }
+   else if(pet.level === 8){
       alert("🎉 다마고치가 성장했습니다! 🐤");
    }
    else if(pet.level === 10){
@@ -1349,6 +1352,12 @@ showFinanceHistory();
 
 function renderPet(){
 
+  if(
+ !document.getElementById("petLevel")
+){
+ return;
+}
+
 document.getElementById(
  "petNeedExp"
 ).innerText =
@@ -1424,29 +1433,87 @@ updateMissionSummary();
 
 function feedPet(){
 
+ const cost = 10;
+
+ if(points < cost){
+
+   alert(
+     "포인트가 부족합니다.\n필요 포인트 : 10P"
+   );
+
+   return;
+ }
+
+ points -= cost;
+
  pet.hunger =
  Math.min(
    100,
-   pet.hunger + 10
+   pet.hunger + 20
  );
 
  saveData();
 
  renderPet();
+
+ updateMissionSummary();
+
+ alert(
+   "먹이 주기 완료!\n-10P"
+ );
 }
 
 function playPet(){
 
+ const cost = 15;
+
+ if(points < cost){
+
+   alert(
+     "포인트가 부족합니다.\n필요 포인트 : 15P"
+   );
+
+   return;
+ }
+
+ points -= cost;
+
  pet.happiness =
  Math.min(
    100,
-   pet.happiness + 10
+   pet.happiness + 20
  );
 
  saveData();
 
  renderPet();
+
+ updateMissionSummary();
+
+ alert(
+   "놀아주기 완료!\n-15P"
+ );
 }
+
+setInterval(()=>{
+
+ pet.hunger =
+ Math.max(
+   0,
+   pet.hunger - 1
+ );
+
+ pet.happiness =
+ Math.max(
+   0,
+   pet.happiness - 1
+ );
+
+ saveData();
+
+ renderPet();
+
+},60000);
   
 renderProducts();
 renderCart();
