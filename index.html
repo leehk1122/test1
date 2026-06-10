@@ -241,9 +241,9 @@ class="text-8xl mb-4">
 
 <p>
 경험치 :
-<span id="petExp">
-0
-</span>
+<span id="petExp">0</span>
+ /
+ <span id="petNeedExp">100</span>
 </p>
 
 <p>
@@ -593,10 +593,27 @@ function cancelPurchase(i){
  );
 
  if(pet.exp >= pet.level * 100){
+
    pet.level += 1;
+
    pet.exp = 0;
-   alert("다마고치가 성장했습니다!");
- }
+
+   if(pet.level === 2){
+      alert("🎉 알이 부화했습니다! 🐥");
+   }
+   else if(pet.level === 5){
+      alert("🎉 다마고치가 성장했습니다! 🐤");
+   }
+   else if(pet.level === 10){
+      alert("🎉 최종 진화! 🐔");
+   }
+   else{
+      alert(
+       "레벨 업! 현재 레벨 : "
+       + pet.level
+      );
+   }
+}
 
  cartItems.splice(i,1);
 
@@ -1282,6 +1299,30 @@ showFinanceHistory();
 }
 
 function renderPet(){
+
+document.getElementById(
+ "petNeedExp"
+).innerText =
+ pet.level * 100;
+
+ let character = "🥚";
+
+ if(pet.level >= 2){
+   character = "🐥";
+ }
+
+ if(pet.level >= 5){
+   character = "🐤";
+ }
+
+ if(pet.level >= 10){
+   character = "🐔";
+ }
+
+ document.getElementById(
+  "petCharacter"
+ ).innerText =
+ character;
 
  document.getElementById(
   "petLevel"
