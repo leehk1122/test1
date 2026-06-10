@@ -196,8 +196,7 @@ class="bg-blue-600 text-white px-8 py-4 rounded-2xl">
 내역 보기
 </button>
 
-<button onclick="withdrawDeposit()" class="bg-blue-700 text-white px-4 py-2 rounded">적금 출금
-</button>
+
 <button
 onclick="withdrawSpecificDeposit()"
 class="bg-blue-900 text-white px-4 py-2 rounded">
@@ -993,52 +992,7 @@ function saveToInvestment(){
  );
 }
 
-function withdrawDeposit(){
 
- let amount = Number(
-   prompt(
-     "출금할 적금 금액을 입력하세요(숫자만 입력해주세요.)",
-     "10000"
-   )
- );
-
- if(!amount || amount <= 0){
-   return;
- }
-
- if(amount > finance.deposit){
-
-   alert(
-     "적금 금액보다 많이 출금할 수 없습니다."
-   );
-
-   return;
- }
-
- finance.deposit =
-Math.floor(
- finance.deposit - amount
-);
-
- savedMoney =
-Math.floor(
- savedMoney + amount
-);
-
-if(finance.deposit <= 0){
-   finance.deposit = 0;
-   finance.depositHistory = [];
-}
-
- saveData();
-
- renderCart();
-
- alert(
-   amount.toLocaleString() +
-   "원이 절약 금액으로 이동되었습니다."
- );
-}
 
 function withdrawInvestment(){
 
