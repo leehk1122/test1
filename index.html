@@ -627,6 +627,7 @@ function cancelPurchase(i){
  saveData();
 
  renderCart();
+renderPet();
 
  updateMissionSummary();
 }
@@ -1366,10 +1367,14 @@ document.getElementById(
  let character = "🥚";
 
  if(pet.level >= 2){
+   character = "🐣";
+ }
+  
+  if(pet.level >= 5){
    character = "🐥";
  }
 
- if(pet.level >= 5){
+ if(pet.level >= 8){
    character = "🐤";
  }
 
