@@ -534,8 +534,6 @@ function resetCart(){
     savedMoney = 0;
 
     cancelCount = 0;
-    finance.depositHistory = [];
-    finance.investmentHistory = [];
 
     easyRewardClaimed = false;
     normalRewardClaimed = false;
@@ -868,12 +866,24 @@ function saveToDeposit(){
    finance.depositHistory = [];
  }
 
+ let existing = finance.depositHistory.find(
+ item => item.product === product.name
+);
+
+if(existing){
+
+ existing.amount += amount;
+
+}else{
+
  finance.depositHistory.push({
    product: product.name,
    rate: product.rate,
    amount: amount,
    date: new Date().toLocaleDateString()
  });
+
+}
 
  savedMoney -= amount;
 
@@ -1216,12 +1226,14 @@ function withdrawSpecificDeposit(){
 
  saveData();
 
- renderCart();
+renderCart();
 
- alert(
-   amount.toLocaleString() +
-   "원 출금 완료"
- );
+alert(
+ amount.toLocaleString() +
+ "원 출금 완료"
+);
+
+showFinanceHistory();
 }
   
 renderProducts();
