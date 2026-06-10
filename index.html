@@ -1361,10 +1361,12 @@ function resetPet(){
    hunger: 100,
    happiness: 50
  };
+points = 0;
 
  saveData();
 
  renderPet();
+updateMissionSummary();
 
  alert(
   "다마고치가 초기화되었습니다."
