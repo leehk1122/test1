@@ -209,7 +209,11 @@ class="bg-blue-900 text-white px-4 py-2 rounded">
 상품별 적금 출금
 </button>
 
-<button onclick="withdrawInvestment()" class="bg-green-700 text-white px-4 py-2 rounded">투자 회수</button>
+<button
+onclick="withdrawSpecificInvestment()"
+class="bg-green-700 text-white px-4 py-2 rounded">
+상품별 투자 회수
+</button>
       
 </div>
   </section>
@@ -638,8 +642,6 @@ function resetCart(){
     savedMoney = 0;
 
     cancelCount = 0;
-    finance.depositHistory = [];
-finance.investmentHistory = [];
 
     easyRewardClaimed = false;
     normalRewardClaimed = false;
@@ -1101,42 +1103,90 @@ function saveToInvestment(){
 
 
 
-function withdrawInvestment(){
+function withdrawSpecificInvestment(){
 
- let amount = Number(
+ if(
+   !finance.investmentHistory ||
+   finance.investmentHistory.length === 0
+ ){
+   alert("투자 내역이 없습니다.");
+   return;
+ }
+
+ let menu =
+ "회수할 투자 선택\n\n";
+
+ finance.investmentHistory.forEach(
+ (item,index)=>{
+
+   menu +=
+   (index+1) +
+   ". " +
+   item.product +
+   " (" +
+   item.currentValue.toLocaleString() +
+   "원)\n";
+ });
+
+ let choice =
+ Number(prompt(menu));
+
+ if(
+   !choice ||
+   choice < 1 ||
+   choice > finance.investmentHistory.length
+ ){
+   return;
+ }
+
+ let target =
+ finance.investmentHistory[
+   choice-1
+ ];
+
+ let amount =
+ Number(
    prompt(
-     "회수할 투자 금액을 입력하세요(숫자만 입력해주세요.)",
-     "10000"
+     "회수 금액 입력\n현재 가치 : " +
+     target.currentValue.toLocaleString() +
+     "원"
    )
  );
 
- if(!amount || amount <= 0){
+ if(
+   !amount ||
+   amount <= 0
+ ){
    return;
  }
 
- if(amount > finance.investment){
-
+ if(
+   amount > target.currentValue
+ ){
    alert(
-     "현재 투자 금액보다 많이 회수할 수 없습니다."
+    "현재 투자 금액보다 많습니다."
    );
-
    return;
  }
 
- finance.investment =
-Math.floor(
- finance.investment - amount
-);
+ amount =
+ Math.floor(amount);
 
- savedMoney =
-Math.floor(
- savedMoney + amount
-);
+ target.currentValue -= amount;
 
-if(finance.investment <= 0){
-   finance.investment = 0;
-   finance.investmentHistory = [];
-}
+ finance.investment -= amount;
+
+ savedMoney += amount;
+
+ if(
+   target.currentValue <= 0
+ ){
+
+   finance.investmentHistory.splice(
+     choice-1,
+     1
+   );
+ }
 
  saveData();
 
@@ -1144,7 +1194,7 @@ if(finance.investment <= 0){
 
  alert(
    amount.toLocaleString() +
-   "원이 투자 계좌에서 회수되었습니다."
+   "원 회수 완료"
  );
 }
 
