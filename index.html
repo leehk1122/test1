@@ -1111,7 +1111,7 @@ function withdrawSpecificDeposit(){
  }
 
  let menu =
- "출금할 적금 선택\n\n";
+ "출금할 적금 선택(숫자만 입력해주세요.)\n\n";
 
  finance.depositHistory.forEach(
  (item,index)=>{
@@ -1144,7 +1144,7 @@ function withdrawSpecificDeposit(){
  let amount =
  Number(
    prompt(
-     "출금 금액 입력\n현재 : " +
+     "출금 금액 입력(숫자만 입력해주세요.)\n현재 : " +
      target.amount.toLocaleString() +
      "원"
    )
