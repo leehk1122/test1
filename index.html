@@ -267,25 +267,25 @@ class="text-8xl mb-4">
 <button
 onclick="feedPet()"
 class="bg-yellow-500 text-white px-5 py-3 rounded-xl">
-
 먹이주기
-
 </button>
 
 <button
 onclick="playPet()"
 class="bg-green-500 text-white px-5 py-3 rounded-xl">
-
 놀아주기
-
 </button>
 
 <button
 onclick="show('home')"
 class="bg-gray-300 px-5 py-3 rounded-xl">
-
 홈으로
+</button>
 
+<button
+onclick="resetPet()"
+class="bg-red-600 text-white px-5 py-3 rounded-xl">
+다마고치 초기화
 </button>
 
 </div>
@@ -1343,6 +1343,32 @@ document.getElementById(
   "petHunger"
  ).innerText =
  pet.hunger;
+}
+
+function resetPet(){
+
+ if(
+   !confirm(
+    "정말 다마고치를 초기화하시겠습니까?"
+   )
+ ){
+   return;
+ }
+
+ pet = {
+   level: 1,
+   exp: 0,
+   hunger: 100,
+   happiness: 50
+ };
+
+ saveData();
+
+ renderPet();
+
+ alert(
+  "다마고치가 초기화되었습니다."
+ );
 }
 
 function feedPet(){
