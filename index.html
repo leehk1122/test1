@@ -49,7 +49,7 @@ class="bg-blue-600 text-white px-8 py-4 rounded-2xl">
 <button
 onclick="show('pet')"
 class="bg-pink-500 text-white px-8 py-4 rounded-2xl">
-🐣 다마고치
+🐣 모몽이
 </button>
 
 </div>
@@ -225,7 +225,7 @@ class="bg-green-700 text-white px-4 py-2 rounded">
 <div class="bg-white p-8 rounded-3xl shadow mt-10">
 
 <h2 class="text-3xl font-bold mb-6">
-🐣 나의 다마고치
+🐣 나의 모몽이
 </h2>
 
 <div class="text-center">
@@ -289,7 +289,7 @@ class="bg-gray-300 px-5 py-3 rounded-xl">
 <button
 onclick="resetPet()"
 class="bg-red-600 text-white px-5 py-3 rounded-xl">
-다마고치 초기화
+모몽이 초기화
 </button>
 
 </div>
@@ -606,10 +606,10 @@ function cancelPurchase(i){
       alert("🎉 알이 부화했습니다! 🐣");
    }
     else if(pet.level === 5){
-      alert("🎉 다마고치가 성장했습니다! 🐥");
+      alert("🎉 모몽이가 성장했습니다! 🐥");
    }
    else if(pet.level === 8){
-      alert("🎉 다마고치가 성장했습니다! 🐤");
+      alert("🎉 모몽이가 성장했습니다! 🐤");
    }
    else if(pet.level === 10){
       alert("🎉 최종 진화! 🐔");
@@ -1412,7 +1412,7 @@ function resetPet(){
 
  if(
    !confirm(
-    "정말 다마고치를 초기화하시겠습니까?"
+    "정말 모몽이를 초기화하시겠습니까?"
    )
  ){
    return;
@@ -1432,7 +1432,7 @@ points = 0;
 updateMissionSummary();
 
  alert(
-  "다마고치가 초기화되었습니다."
+  "모몽이가 초기화되었습니다."
  );
 }
 
